@@ -1,8 +1,8 @@
 package src;
 
 public class Property {
-    private int price;
-    private int rent;
+    private final int price;
+    private final int rent;
     private Player owner;
 
     public Property(int price, int rent) {
@@ -12,15 +12,15 @@ public class Property {
     }
 
     public int getPrice() {
-        return price;
+        return this.price;
     }
 
     public int getRent() {
-        return rent;
+        return this.rent;
     }
 
     public Player getOwner() {
-        return owner;
+        return this.owner;
     }
 
     public void setOwner(Player owner) {
@@ -28,10 +28,10 @@ public class Property {
     }
 
     public boolean haveOwner() {
-        return owner != null;
+        return this.owner != null;
     }
 
     public void resetOwner() {
-            owner = null;
+            this.owner = null;
     }
 }
