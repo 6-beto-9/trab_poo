@@ -1,20 +1,38 @@
 package src;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Player {
     private String name;
     private Integer coins = 300;
     private Humor humor;
+    private final List<Property> properties = new ArrayList<>();
+
+    public Player(String name, int coins, Humor humor) {
+        this.name = name;
+        this.coins = coins;
+        this.humor = humor;
+    }
 
     public enum Humor {
         IMPULSIVE, DEMANDING, CAREFUL, RANDOM
     }
 
-    private void buyProperty() {
+    private void buyProperty(Property property) {
+        int price = property.getPrice();
 
+        if(!hasEnoughCoins(price)) {
+            throw new Error("Jogador " + this.name + " não tem moedas suficiente");
+        }
+
+        this.coins = this.coins - price;
+        this.properties.add(property);
+        property.setOwner(this);
     }
 
-    public void payPropertyRent() {
-
+    public void payPropertyRent(Property property) {
+        //TODO
     }
 
     private boolean hasEnoughCoins(int amount) {
@@ -45,5 +63,9 @@ public class Player {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Property> getProperties() {
+        return properties;
     }
 }
