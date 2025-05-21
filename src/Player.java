@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
+    private int position;
     private String name;
     private Integer coins = 300;
     private Humor humor;
@@ -13,6 +14,15 @@ public class Player {
         this.name = name;
         this.coins = coins;
         this.humor = humor;
+        this.position = 0;
+    }
+
+    public void move(int space, int boardSize){
+        int newPosition = this.position + space;
+        if(newPosition >= boardSize){
+            this.coins += 100;
+        }
+        this.position = newPosition % boardSize;
     }
 
     public enum Humor {
@@ -38,8 +48,6 @@ public class Player {
     private boolean hasEnoughCoins(int amount) {
         return coins >= amount;
     }
-
-//  GETTERS AND SETTERS =========================================
 
     public Integer getCoins() {
         return coins;
@@ -68,4 +76,9 @@ public class Player {
     public List<Property> getProperties() {
         return properties;
     }
+
+    public int getPosition(){
+        return position;
+    }
+
 }
