@@ -24,9 +24,6 @@ public class Player {
         }
         this.position = newPosition % boardSize;
     }
-    public void teste(){
-        System.out.println("teste");
-    }
 
     public enum Humor {
         IMPULSIVE, DEMANDING, CAREFUL, RANDOM
