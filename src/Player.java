@@ -22,7 +22,14 @@ public class Player {
         IMPULSIVE, DEMANDING, CAREFUL, RANDOM
     }
 
-    public void move(int steps, Board board, Property currentProperty){
+    public void move(int steps, Board board , Property currentProperty){
+        if (board == null) {
+            throw new IllegalArgumentException("Board cannot be null");
+        }
+        if (currentProperty == null) {
+            throw new IllegalArgumentException("Property cannot be null");
+        }
+
         int destination = this.position + steps;
         int boardSize = board.getSize();
         boolean hasOwner = currentProperty.hasOwner();
@@ -41,6 +48,10 @@ public class Player {
     }
 
     public void payPropertyRent(Property property) {
+        if (property == null) {
+            throw new IllegalArgumentException("Property cannot be null");
+        }
+
         int rent = property.getRent();
         Player owner = property.getOwner();
 
@@ -53,6 +64,10 @@ public class Player {
     }
 
     private boolean chooseIfPurchase(Property property) {
+        if (property == null) {
+            throw new IllegalArgumentException("Property cannot be null");
+        }
+
         return switch (this.humor) {
             case Humor.IMPULSIVE -> true;
             case Humor.DEMANDING -> property.getRent() > 50;
@@ -62,6 +77,10 @@ public class Player {
     }
 
     private void buyProperty(Property property) {
+        if (property == null) {
+            throw new IllegalArgumentException("Property cannot be null");
+        }
+
         int price = property.getPrice();
 
         this.pay(price);
@@ -110,5 +129,4 @@ public class Player {
     public int getPosition(){
         return position;
     }
-
 }
