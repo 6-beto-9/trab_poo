@@ -1,12 +1,14 @@
 package src;
 
+import src.gameExceptions.BankruptException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Player {
-    private int position;
+    private int position = 0;
     private String name;
-    private Integer coins = 300;
+    private int coins;
     private Humor humor;
     private final List<Property> properties = new ArrayList<>();
 
@@ -14,47 +16,75 @@ public class Player {
         this.name = name;
         this.coins = coins;
         this.humor = humor;
-        this.position = 0;
-    }
-
-    public void move(int space, int boardSize){
-        int newPosition = this.position + space;
-        if(newPosition >= boardSize){
-            this.coins += 100;
-        }
-        this.position = newPosition % boardSize;
     }
 
     public enum Humor {
         IMPULSIVE, DEMANDING, CAREFUL, RANDOM
     }
 
-    private void buyProperty(Property property) {
-        int price = property.getPrice();
+    public void move(int steps, Board board, Property currentProperty){
+        int destination = this.position + steps;
+        int boardSize = board.getSize();
+        boolean hasOwner = currentProperty.hasOwner();
 
-        if(!hasEnoughCoins(price)) {
-            throw new Error("Jogador " + this.name + " não tem moedas suficiente");
+        if(destination >= boardSize){
+            this.coins += 100;
         }
 
-        this.coins = this.coins - price;
-        this.properties.add(property);
-        property.setOwner(this);
+        if(hasOwner) {
+            this.payPropertyRent(currentProperty);
+        } else if (this.chooseIfPurchase(currentProperty)) {
+            this.buyProperty(currentProperty);
+        }
+
+        this.position = destination % boardSize;
     }
 
     public void payPropertyRent(Property property) {
-        //TODO
+        int rent = property.getRent();
+        Player owner = property.getOwner();
+
+        this.pay(rent);
+        owner.receiveCoins(rent);
+    }
+
+    public void receiveCoins(int coins) {
+        this.coins += coins;
+    }
+
+    private boolean chooseIfPurchase(Property property) {
+        return switch (this.humor) {
+            case Humor.IMPULSIVE -> true;
+            case Humor.DEMANDING -> property.getRent() > 50;
+            case Humor.CAREFUL -> coins - property.getPrice() >= 80;
+            case Humor.RANDOM -> Math.random() < 0.5;
+        };
+    }
+
+    private void buyProperty(Property property) {
+        int price = property.getPrice();
+
+        this.pay(price);
+        this.properties.add(property);
+        property.setOwner(this);
     }
 
     private boolean hasEnoughCoins(int amount) {
         return coins >= amount;
     }
 
-    public Integer getCoins() {
-        return coins;
+    private void pay(int price) {
+        if(this.hasEnoughCoins(price)) {
+            throw new BankruptException(this.name + " Não tem dinheiro suficiente para pagar");
+        }
+
+        this.coins = this.coins - price;
     }
 
-    public void setCoins(Integer coins) {
-        this.coins = coins;
+    // GETTERS AND SETTERS ========================
+
+    public int getCoins() {
+        return coins;
     }
 
     public Humor getHumor() {

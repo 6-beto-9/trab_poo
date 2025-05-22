@@ -27,7 +27,7 @@ public class Property {
         this.owner = owner;
     }
 
-    public boolean haveOwner() {
+    public boolean hasOwner() {
         return this.owner != null;
     }
 
