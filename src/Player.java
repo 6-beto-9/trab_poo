@@ -22,30 +22,31 @@ public class Player {
         IMPULSIVE, DEMANDING, CAREFUL, RANDOM
     }
 
-    public void move(int steps, Board board , Property currentProperty){
+    public void move(int steps, Board board) {
         if (board == null) {
             throw new IllegalArgumentException("Board cannot be null");
         }
-        if (currentProperty == null) {
-            throw new IllegalArgumentException("Property cannot be null");
-        }
 
-        int destination = this.position + steps;
         int boardSize = board.getSize();
-        boolean hasOwner = currentProperty.hasOwner();
+        int destination = (this.position + steps) % boardSize;
 
-        if(destination >= boardSize){
+        Property destinationProperty = board.getSquareAt(destination);
+
+        if (this.position + steps >= boardSize) {
             this.coins += 100;
         }
 
-        if(hasOwner) {
-            this.payPropertyRent(currentProperty);
-        } else if (this.chooseIfPurchase(currentProperty)) {
-            this.buyProperty(currentProperty);
+        if (destinationProperty.hasOwner() && !destinationProperty.getOwner().equals(this)) {
+            this.payPropertyRent(destinationProperty);
+        }
+        else if (!destinationProperty.hasOwner() && this.chooseIfPurchase(destinationProperty)) {
+            this.buyProperty(destinationProperty);
         }
 
-        this.position = destination % boardSize;
+        this.position = destination;
     }
+
+
 
     public void payPropertyRent(Property property) {
         if (property == null) {
@@ -93,7 +94,7 @@ public class Player {
     }
 
     private void pay(int price) {
-        if(this.hasEnoughCoins(price)) {
+        if(!this.hasEnoughCoins(price)) {
             throw new BankruptException(this.name + " Não tem dinheiro suficiente para pagar");
         }
 
