@@ -68,6 +68,9 @@ public class Player {
         if (property == null) {
             throw new IllegalArgumentException("Property cannot be null");
         }
+        if (!this.hasEnoughCoins(property.getPrice())) {
+            return false;
+        }
 
         return switch (this.humor) {
             case Humor.IMPULSIVE -> true;
